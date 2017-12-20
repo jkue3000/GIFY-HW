@@ -4,8 +4,6 @@ var failArray = ["fishing fail", "army fail", "rapping fail"];
 var userInputGlobal = $('#userSearchInput').val().trim();
 
 
-
-
 // function to make buttons
 function btnCreation() {
 
@@ -16,10 +14,16 @@ function btnCreation() {
 	for (i=0; i<failArray.length; i++){
 		
 		// creating buttons dynamiclally
-		var addSearchBtn = $('<button id="' + failArray[i] + ' searchClick' +'">' + failArray[i] + '</button>');
+		var addSearchBtn = $('<button>');
+		var label = $('<label>');
+		label.append(failArray[i]);
+		addSearchBtn.attr('class', "searchClick");
+		addSearchBtn.attr('data-name', failArray[i]);
+		addSearchBtn.attr('data-state', "still");
+		addSearchBtn.append(label);
 
 		// adding data attr to the searchClick id
-		$('#searchClick').attr('data-fail'+ failArray[i]);
+		$('.searchClick').attr('data-fail'+ failArray[i]);
 
 		// showing buttons to the class
 		$('.holdBtn').append(addSearchBtn);
@@ -56,14 +60,39 @@ $('#addFail').on('click', function(){
 
 });
 
- 'Change the button to button up above
-$('button').on('click', function(){
-'call the ajax and link to the api correctlly
-	console.log('fdjskfhdkjs');
+ // 'Change the button to button up above
+$("div").on("click", "button", function(event){
+    
+    event.preventDefault();
+    console.log( $( this ).text() );
 
-	var failSearch = $(this).attr("data-fail");
-
+    // vars to call inside the AJAX
+	var failSearch = $(this).attr("data-name");
 	var apiKey = "&limit=10&rating=G&api_key=KjGZz4rr3h1EYc0PtGyiMVW9DXYclcWO";
 	var queryUrl = "https://api.giphy.com/v1/gifs/search?q=" + failSearch + apiKey;
+
+	// AJAX to get GIFY API
+	$.ajax({
+        url: queryUrl,
+        method: "GET"
+      })
+
+      // After the data from the AJAX request comes back
+      .done(function(response) {
+
+    	console.log("------------------------------------");
+    	console.log("URL: " + queryUrl);
+    	console.log("------------------------------------");
+
+		// var to store GIFY data
+      	var gifData = response.data;
+      	// var to get gif Rating
+      	var gifRating = response.data[0].rating;
+
+      	console.log(gifRating);
+"create divs for each gif and add data still and animate attr to them
+'onclick on the gif animate and still make create conditional to make them move
+'replace the html div where the gifs go once the a new button is clicked
+      });
 
 });
