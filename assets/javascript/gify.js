@@ -25,6 +25,9 @@ function btnCreation() {
 		// adding data attr to the searchClick id
 		$('.searchClick').attr('data-fail'+ failArray[i]);
 
+		// css for fail array buttons
+		$(".searchClick").css('margin', '10px');
+
 		// showing buttons to the class
 		$('.holdBtn').append(addSearchBtn);
 	}
@@ -60,7 +63,7 @@ $('#addFail').on('click', function(){
 
 });
 
- // 'Change the button to button up above
+ // Creating div for the button clicks of the fail
 $("div").on("click", "button", function(event){
     
     event.preventDefault();
@@ -70,6 +73,9 @@ $("div").on("click", "button", function(event){
 	var failSearch = $(this).attr("data-name");
 	var apiKey = "&limit=10&rating=G&api_key=KjGZz4rr3h1EYc0PtGyiMVW9DXYclcWO";
 	var queryUrl = "https://api.giphy.com/v1/gifs/search?q=" + failSearch + apiKey;
+
+	// empty HTML when on click
+	$('#failsGoHere').empty();
 
 	// AJAX to get GIFY API
 	$.ajax({
@@ -84,15 +90,64 @@ $("div").on("click", "button", function(event){
     	console.log("URL: " + queryUrl);
     	console.log("------------------------------------");
 
-		// var to store GIFY data
+      	// var to store GIFY data
       	var gifData = response.data;
-      	// var to get gif Rating
-      	var gifRating = response.data[0].rating;
+      	
+      	
+      	for (k = 0; k < gifData.length; k++){
+      		// div for img and rating 
+      		var gifDiv = $("<div class='failGif'>");
 
+      		// Placing the div and Gif IMG into the div
+      		var gifImg = $("<img>")
+
+      		gifImg.attr("class", "gifImage");
+            gifImg.attr("src", gifData[k].images.fixed_height_still.url);
+            gifImg.attr("data-state", "still");
+            gifImg.attr("data-still", gifData[k].images.fixed_height_still.url);
+            gifImg.attr("data-animate", gifData[k].images.fixed_height_downsampled.url);
+            gifDiv.append(gifImg);
+
+            // var to store gifRating
+      		var gifRating = gifData[k].rating;
+
+   			// var to display the rating to html
+      		var p1 = $("<p>");
+      		p1.append("Rating: " + gifRating);
+      		p1.css('text-align', 'center');
+      		p1.css('font-weight', 'bold');
+      		p1.css('font-size', '20px');
+      		gifDiv.append(p1);
+      		$("#failsGoHere").append(gifDiv);
+
+      		// css for the Gif Divs 
+			$(".failGif").css('display', 'inline-block');
+			$(".failGif").css('margin', '20px');
+
+      	}
+
+      	// on click funtion to animate and still gif IMG
+      	$(".gifImage").on("click", function() {
+            var state = $(this).attr("data-state");
+            if (state === "still") {
+            	$(this).attr("src", $(this).attr("data-animate"));
+            	$(this).attr("data-state", "animate");
+            } else {
+            	$(this).attr("src", $(this).attr("data-still"));
+            	$(this).attr("data-state", "still");
+            }
+        });
+
+      	console.log(gifData);
       	console.log(gifRating);
-"create divs for each gif and add data still and animate attr to them
-'onclick on the gif animate and still make create conditional to make them move
-'replace the html div where the gifs go once the a new button is clicked
+
       });
 
 });
+
+// css for the form id 
+$("#addUserInput").css('float', 'right');
+$("#addUserInput").css('margin', '30px');
+$("#addFail").css('margin-top', '20px');
+
+
